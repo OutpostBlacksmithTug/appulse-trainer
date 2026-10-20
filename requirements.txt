@@ -1,0 +1,9 @@
+customtkinter==5.2.2
+pymem==1.13.1
+pywin32==306
+psutil==5.9.8
+pyyaml==6.0.1
+pydivert==2.1.0
+numpy==1.26.4
+cryptography==42.0.5
+watchdog==4.0.0
