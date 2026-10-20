@@ -1,0 +1,13 @@
+profile: default
+target_process: game.exe
+extensions_dir: appulse/extensions
+tick_hz: 120
+overlay_enabled: true
+enabled_extensions:
+  - aimbot
+  - esp
+  - radar
+offsets:
+  local_player: 0x1A2B3C4
+  entity_list: 0x2C3D4E5
+  view_matrix: 0x3E4F5A6
