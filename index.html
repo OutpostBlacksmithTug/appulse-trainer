@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Appulse Trainer — Aimbot, ESP &amp; Triggerbot for Windows</title>
+<style>
+  :root{
+    --bg-0:#070a14;
+    --bg-1:#0b1024;
+    --bg-2:#121a3a;
+    --ink:#e8ecff;
+    --muted:#9aa6c9;
+    --accent:#5b8cff;
+    --accent-2:#a45bff;
+    --accent-3:#39e0c8;
+    --card:rgba(255,255,255,0.045);
+    --card-border:rgba(255,255,255,0.09);
+    --radius:18px;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0;}
+
+  html{scroll-behavior:smooth;}
+
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--ink);
+    background:
+      radial-gradient(1100px 600px at 15% -5%, rgba(91,140,255,0.22), transparent 60%),
+      radial-gradient(900px 500px at 85% 0%, rgba(164,91,255,0.18), transparent 55%),
+      radial-gradient(800px 700px at 50% 110%, rgba(57,224,200,0.10), transparent 60%),
+      linear-gradient(160deg, var(--bg-0) 0%, var(--bg-1) 45%, var(--bg-2) 100%);
+    background-attachment:fixed;
+    min-height:100vh;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  a{color:inherit;text-decoration:none;}
+
+  .wrap{width:min(1120px,92vw);margin:0 auto;}
+
+  /* ---------------- NAV ---------------- */
+  .nav-outer{
+    position:sticky;
+    top:0;
+    z-index:100;
+    padding:14px 0;
+    backdrop-filter:blur(0px);
+  }
+  .nav{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+    padding:12px 20px;
+    border-radius:16px;
+    background:rgba(12,17,38,0.55);
+    border:1px solid rgba(255,255,255,0.08);
+    backdrop-filter:blur(16px) saturate(160%);
+    -webkit-backdrop-filter:blur(16px) saturate(160%);
+    box-shadow:0 10px 40px rgba(0,0,0,0.35);
+  }
+  .brand{
+    display:flex;align-items:center;gap:10px;
+    font-weight:800;letter-spacing:0.3px;font-size:1.05rem;
+    white-space:nowrap;
+  }
+  .brand-mark{
+    width:30px;height:30px;border-radius:9px;
+    display:grid;place-items:center;
+    background:linear-gradient(135deg,var(--accent),var(--accent-2));
+    box-shadow:0 0 18px rgba(91,140,255,0.55);
+    font-size:0.9rem;
+  }
+  .brand span.grad{
+    background:linear-gradient(90deg,#cdd8ff,#8fb0ff);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .nav-links{
+    display:flex;gap:28px;font-size:0.93rem;color:var(--muted);
+  }
+  .nav-links a{transition:color .2s ease;}
+  .nav-links a:hover{color:#fff;}
+
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:9px;
+    font-weight:700;font-size:0.95rem;
+    padding:12px 22px;border-radius:12px;
+    border:1px solid transparent;
+    cursor:pointer;
+    transition:transform .18s ease, box-shadow .25s ease, background .25s ease, border-color .25s ease;
+    white-space:nowrap;
+  }
+  .btn-primary{
+    background:linear-gradient(135deg,var(--accent),var(--accent-2));
+    color:#fff;
+    box-shadow:0 8px 28px rgba(91,140,255,0.35), inset 0 1px 0 rgba(255,255,255,0.25);
+  }
+  .btn-primary:hover{
+    transform:translateY(-2px);
+    box-shadow:0 14px 38px rgba(120,110,255,0.5), inset 0 1px 0 rgba(255,255,255,0.3);
+  }
+  .btn-ghost{
+    background:rgba(255,255,255,0.05);
+    border-color:rgba(255,255,255,0.16);
+    color:var(--ink);
+  }
+  .btn-ghost:hover{
+    transform:translateY(-2px);
+    background:rgba(255,255,255,0.1);
+    border-color:rgba(255,255,255,0.3);
+  }
+  .nav .btn{padding:10px 18px;font-size:0.88rem;}
+
+  /* ---------------- HERO ---------------- */
+  .hero{
+    padding:86px 0 70px;
+    text-align:center;
+  }
+  .pill{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:7px 16px;border-radius:999px;
+    font-size:0.8rem;font-weight:600;letter-spacing:0.4px;
+    color:#b8c6ff;
+    background:rgba(91,140,255,0.12);
+    border:1px solid rgba(91,140,255,0.35);
+    box-shadow:0 0 24px rgba(91,140,255,0.18);
+  }
+  .pill .dot{
+    width:7px;height:7px;border-radius:50%;
+    background:var(--accent-3);
+    box-shadow:0 0 10px var(--accent-3);
+    animation:pulse 2s infinite;
+  }
+  @keyframes pulse{
+    0%,100%{opacity:1;transform:scale(1);}
+    50%{opacity:.5;transform:scale(1.35);}
+  }
+
+  h1{
+    margin:26px auto 20px;
+    font-size:clamp(2.3rem,5.6vw,4.1rem);
+    line-height:1.08;
+    letter-spacing:-1.5px;
+    font-weight:800;
+    max-width:900px;
+    background:linear-gradient(100deg,#ffffff 10%,#a9c0ff 45%,#c79bff 75%,#7ef0dd 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .hero p.lead{
+    max-width:640px;margin:0 auto;
+    color:var(--muted);
+    font-size:clamp(1rem,2vw,1.12rem);
+  }
+  .hero-actions{
+    display:flex;gap:14px;justify-content:center;flex-wrap:wrap;
+    margin:34px 0 44px;
+  }
+  .hero-actions .btn{padding:15px 30px;font-size:1rem;border-radius:14px;}
+
+  .stats{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:14px;
+    max-width:860px;
+    margin:0 auto;
+  }
+  .stat{
+    background:var(--card);
+    border:1px solid var(--card-border);
+    border-radius:14px;
+    padding:18px 12px;
+    backdrop-filter:blur(8px);
+  }
+  .stat b{
+    display:block;
+    font-size:1.22rem;
+    letter-spacing:-0.3px;
+    background:linear-gradient(90deg,#dfe6ff,#9db5ff);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .stat small{
+    color:var(--muted);
+    font-size:0.78rem;
+    text-transform:uppercase;
+    letter-spacing:0.9px;
+    font-weight:600;
+  }
+
+  /* ---------------- SECTION HEADINGS ---------------- */
+  section{padding:64px 0;}
+  .sec-head{text-align:center;margin-bottom:44px;}
+  .sec-head .kicker{
+    font-size:0.78rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;
+    color:var(--accent-3);
+  }
+  .sec-head h2{
+    margin-top:10px;
+    font-size:clamp(1.7rem,3.6vw,2.5rem);
+    letter-spacing:-0.8px;
+    font-weight:800;
+    background:linear-gradient(90deg,#f2f5ff,#b3c4ff);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .sec-head p{color:var(--muted);margin-top:10px;max-width:560px;margin-left:auto;margin-right:auto;}
+
+  /* ---------------- FEATURES ---------------- */
+  .features-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:20px;
+  }
+  .feature{
+    position:relative;
+    background:var(--card);
+    border:1px solid var(--card-border);
+    border-radius:var(--radius);
+    padding:28px 24px 26px;
+    overflow:hidden;
+    backdrop-filter:blur(8px);
+    transition:transform .25s ease, box-shadow .3s ease, border-color .3s ease, background .3s ease;
+  }
+  .feature::before{
+    content:"";
+    position:absolute;top:0;left:0;right:0;height:3px;
+    background:linear-gradient(90deg,var(--accent),var(--accent-2),var(--accent-3));
+    opacity:.9;
+  }
+  .feature:hover{
+    transform:translateY(-7px);
+    background:rgba(255,255,255,0.07);
+    border-color:rgba(140,160,255,0.35);
+    box-shadow:0 18px 44px rgba(20,30,80,0.55), 0 0 0 1px rgba(120,150,255,0.12);
+  }
+  .feature .ico{
+    font-size:1.7rem;
+    width:52px;height:52px;
+    display:grid;place-items:center;
+    border-radius:13px;
+    background:rgba(91,140,255,0.12);
+    border:1px solid rgba(91,140,255,0.22);
+    margin-bottom:18px;
+  }
+  .feature h3{
+    font-size:1.06rem;font-weight:700;margin-bottom:8px;letter-spacing:-0.2px;
+  }
+  .feature p{color:var(--muted);font-size:0.9rem;}
+
+  /* ---------------- HOW IT WORKS ---------------- */
+  .steps{
+    position:relative;
+    max-width:720px;
+    margin:0 auto;
+    padding-left:44px;
+  }
+  .steps::before{
+    content:"";
+    position:absolute;
+    left:17px;top:16px;bottom:16px;
+    width:3px;
+    border-radius:3px;
+    background:linear-gradient(180deg,var(--accent),var(--accent-2) 50%,var(--accent-3));
+    box-shadow:0 0 18px rgba(91,140,255,0.4);
+  }
+  .step{
+    position:relative;
+    padding:0 0 38px 14px;
+  }
+  .step:last-child{padding-bottom:0;}
+  .step .num{
+    position:absolute;
+    left:-44px;top:0;
+    width:37px;height:37px;
+    border-radius:50%;
+    display:grid;place-items:center;
+    font-weight:800;font-size:0.92rem;
+    color:#fff;
+    background:linear-gradient(135deg,var(--accent),var(--accent-2));
+    box-shadow:0 0 0 5px rgba(11,16,36,0.9), 0 0 22px rgba(91,140,255,0.5);
+  }
+  .step h3{font-size:1.08rem;margin-bottom:6px;letter-spacing:-0.2px;}
+  .step p{color:var(--muted);font-size:0.92rem;}
+
+  /* ---------------- FAQ ---------------- */
+  .faq{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:13px;}
+  details{
+    background:var(--card);
+    border:1px solid var(--card-border);
+    border-radius:14px;
+    overflow:hidden;
+    transition:border-color .25s ease, background .25s ease;
+    backdrop-filter:blur(8px);
+  }
+  details[open]{
+    border-color:rgba(120,150,255,0.35);
+    background:rgba(255,255,255,0.06);
+  }
+  summary{
+    list-style:none;
+    cursor:pointer;
+    padding:19px 22px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    font-weight:600;
+    font-size:0.97rem;
+    user-select:none;
+  }
+  summary::-webkit-details-marker{display:none;}
+  summary .plus{
+    position:relative;
+    flex:0 0 22px;
+    width:22px;height:22px;
+    border-radius:7px;
+    background:rgba(91,140,255,0.15);
+    border:1px solid rgba(91,140,255,0.3);
+    transition:transform .3s ease, background .3s ease;
+  }
+  summary .plus::before,
+  summary .plus::after{
+    content:"";
+    position:absolute;
+    top:50%;left:50%;
+    background:#a9c0ff;
+    border-radius:2px;
+    transform:translate(-50%,-50%);
+    transition:transform .3s ease, opacity .3s ease;
+  }
+  summary .plus::before{width:10px;height:2px;}
+  summary .plus::after{width:2px;height:10px;}
+  details[open] summary .plus{
+    transform:rotate(45deg);
+    background:rgba(164,91,255,0.22);
+    border-color:rgba(164,91,255,0.45);
+  }
+  summary .plus::before, details[open] summary .plus::before{transform:translate(-50%,-50%);}
+  details[open] summary .plus::after{opacity:0;}
+  .faq-body{
+    padding:0 22px 20px;
+    color:var(--muted);
+    font-size:0.92rem;
+    border-top:1px solid rgba(255,255,255,0.06);
+    margin-top:-1px;
+    padding-top:16px;
+  }
+
+  /* ---------------- CTA BANNER ---------------- */
+  .cta-banner{
+    position:relative;
+    overflow:hidden;
+    border-radius:26px;
+    padding:66px 32px;
+    text-align:center;
+    border:1px solid rgba(120,150,255,0.28);
+    background:linear-gradient(145deg, rgba(91,140,255,0.16), rgba(164,91,255,0.12) 55%, rgba(57,224,200,0.10));
+    box-shadow:0 30px 80px rgba(10,15,40,0.6), inset 0 1px 0 rgba(255,255,255,0.12);
+  }
+  .cta-banner::before{
+    content:"";
+    position:absolute;
+    top:-40%;left:50%;
+    transform:translateX(-50%);
+    width:820px;height:820px;
+    border-radius:50%;
+    background:radial-gradient(circle, rgba(120,150,255,0.35), rgba(164,91,255,0.12) 45%, transparent 68%);
+    pointer-events:none;
+  }
+  .cta-banner > *{position:relative;z-index:1;}
+  .cta-banner h2{
+    font-size:clamp(1.7rem,4vw,2.6rem);
+    letter-spacing:-0.9px;
+    font-weight:800;
+    background:linear-gradient(90deg,#ffffff,#b7c7ff,#d7b6ff);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .cta-banner p{
+    color:#b9c4e6;
+    margin:14px auto 30px;
+    max-width:520px;
+    font-size:0.98rem;
+  }
+  .cta-banner .btn{padding:15px 34px;font-size:1rem;border-radius:14px;}
+
+  /* ---------------- FOOTER ---------------- */
+  footer{
+    margin-top:70px;
+    border-top:1px solid rgba(255,255,255,0.07);
+    padding:34px 0 44px;
+  }
+  .foot{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:18px;
+    flex-wrap:wrap;
+    color:var(--muted);
+    font-size:0.86rem;
+  }
+  .foot .brand{font-size:0.95rem;}
+  .foot a.gh{
+    display:inline-flex;align-items:center;gap:8px;
+    color:#c3cff5;
+    font-weight:600;
+    padding:8px 15px;
+    border-radius:10px;
+    border:1px solid rgba(255,255,255,0.12);
+    background:rgba(255,255,255,0.04);
+    transition:all .22s ease;
+  }
+  .foot a.gh:hover{
+    color:#fff;
+    border-color:rgba(140,160,255,0.45);
+    background:rgba(91,140,255,0.12);
+    transform:translateY(-1px);
+  }
+
+  /* ---------------- RESPONSIVE ---------------- */
+  @media (max-width:900px){
+    .features-grid{grid-template-columns:repeat(2,1fr);}
+    .stats{grid-template-columns:repeat(2,1fr);}
+  }
+  @media (max-width:640px){
+    .nav-links{display:none;}
+    .nav{padding:10px 14px;}
+    .nav .btn{padding:9px 15px;font-size:0.82rem;}
+    .hero{padding:56px 0 48px;}
+    .hero-actions{flex-direction:column;align-items:stretch;}
+    .hero-actions .btn{width:100%;}
+    .features-grid{grid-template-columns:1fr;}
+    .stats{grid-template-columns:1fr 1fr;}
+    section{padding:48px 0;}
+    .steps{padding-left:38px;}
+    .step .num{left:-38px;width:32px;height:32px;font-size:0.82rem;}
+    .steps::before{left:14px;width:3px;}
+    .cta-banner{padding:48px 20px;border-radius:20px;}
+    .foot{flex-direction:column;text-align:center;}
+  }
+</style>
+</head>
+<body>
+
+<div class="nav-outer">
+  <div class="wrap">
+    <nav class="nav">
+      <a class="brand" href="#top">
+        <span class="brand-mark">🎯</span>
+        <span class="grad">Appulse Trainer</span>
+      </a>
+      <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#how">How it works</a>
+        <a href="#faq">FAQ</a>
+      </div>
+      <a class="btn btn-primary" href="https://gitscore.cc">Download</a>
+    </nav>
+  </div>
+</div>
+
+<main id="top">
+  <div class="wrap">
+
+    <!-- HERO -->
+    <header class="hero">
+      <div class="pill"><span class="dot"></span> Appulse Trainer · Windows Utility Suite</div>
+      <h1>The All-in-One Aim &amp; Vision Toolkit for Appulse Trainer</h1>
+      <p class="lead">
+        Aimbot, ESP wallhack, triggerbot, and no-recoil toggle — bundled into a single
+        injector loader with per-game configs and hotkey profiles. Built for Windows 10 &amp; 11.
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="https://gitscore.cc">⬇ Download Appulse Trainer</a>
+        <a class="btn btn-ghost" href="https://gitscore.cc">View on GitHub</a>
+      </div>
+      <div class="stats">
+        <div class="stat"><b>48,200+</b><small>Downloads</small></div>
+        <div class="stat"><b>v3.4.1</b><small>Latest version</small></div>
+        <div class="stat"><b>Windows 10 / 11</b><small>Supported OS</small></div>
+        <div class="stat"><b>Free &amp; open source</b><small>License</small></div>
+      </div>
+    </header>
+
+    <!-- FEATURES -->
+    <section id="features">
+      <div class="sec-head">
+        <div class="kicker">Features</div>
+        <h2>Everything in one injector loader</h2>
+        <p>Six core modules that work independently or together, each with its own hotkey and config profile.</p>
+      </div>
+      <div class="features-grid">
+        <article class="feature">
+          <div class="ico">🎯</div>
+          <h3>Aimbot</h3>
+          <p>Configurable FOV, smoothness, and bone priority. Lock onto targets with per-game aim profiles and humanized curves.</p>
+        </article>
+        <article class="feature">
+          <div class="ico">👁️</div>
+          <h3>ESP Wallhack</h3>
+          <p>See player boxes, skeletons, health bars, and distance labels through walls with adjustable color and opacity.</p>
+        </article>
+        <article class="feature">
+          <div class="ico">⚡</div>
+          <h3>Triggerbot</h3>
+          <p>Instant-fire module with adjustable delay, hitbox filters, and hold-key activation for precise reaction timing.</p>
+        </article>
+        <article class="feature">
+          <div class="ico">🔧</div>
+          <h3>No-Recoil Toggle</h3>
+          <p>Neutralize vertical and horizontal recoil with a single hotkey. Tune strength per weapon class and game.</p>
+        </article>
+        <article class="feature">
+          <div class="ico">🚀</div>
+          <h3>Injector Loader</h3>
+          <p>One-click DLL injection with process auto-detection, manual map mode, and safe unload without restarting your game.</p>
+        </article>
+        <article class="feature">
+          <div class="ico">⌨️</div>
+          <h3>Hotkey Profiles</h3>
+          <p>Save and switch full config sets per game. Bind every module to its own key and load profiles instantly.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section id="how">
+      <div class="sec-head">
+        <div class="kicker">How it works</div>
+        <h2>Up and running in three steps</h2>
+        <p>No installers, no dependencies — just download, launch, and load your config.</p>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="num">1</div>
+          <h3>Download the loader</h3>
+          <p>Grab the latest Appulse Trainer build from the download page and extract the archive to any folder on your PC.</p>
+        </div>
+        <div class="step">
+          <div class="num">2</div>
+          <h3>Launch &amp; select your game</h3>
+          <p>Run the injector loader as administrator. It auto-detects running processes and lets you pick the matching per-game config.</p>
+        </div>
+        <div class="step">
+          <div class="num">3</div>
+          <h3>Inject &amp; toggle modules</h3>
+          <p>Hit inject, then use your hotkey profile to toggle aimbot, ESP, triggerbot, and no-recoil on the fly — no restart needed.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq">
+      <div class="sec-head">
+        <div class="kicker">FAQ</div>
+        <h2>Common questions</h2>
+        <p>Quick answers about the Appulse Trainer loader and its modules.</p>
+      </div>
+      <div class="faq">
+        <details>
+          <summary>Which Windows versions are supported?<span class="plus"></span></summary>
+          <div class="faq-body">Appulse Trainer is built and tested for Windows 10 and Windows 11 (64-bit). The injector loader requires administrator privileges to attach to game processes.</div>
+        </details>
+        <details>
+          <summary>How do per-game configs and hotkey profiles work?<span class="
