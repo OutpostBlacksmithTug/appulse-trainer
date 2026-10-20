@@ -1,0 +1,1 @@
+"""Drop-in extension modules. Each ext_*.py exposes register(registry)."""
